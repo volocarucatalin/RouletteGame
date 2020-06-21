@@ -10,7 +10,7 @@ public class Room {
     @Id
     @GeneratedValue
     @Column
-    private Integer room ;
+    private Integer room;
 
     public Integer getRoom() {
         return room;

@@ -1,6 +1,5 @@
 package com.game.roullet.controller;
 
-import com.game.roullet.entity.Player;
 import com.game.roullet.response.ResponsePlayer;
 import com.game.roullet.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class PlayerController {
 
     @PostMapping("/players")
     public ResponseEntity<?> createPlayer() {
-      ResponsePlayer responsePlayer = new ResponsePlayer(playerService.createPlayer());
+        ResponsePlayer responsePlayer = new ResponsePlayer(playerService.createPlayer());
 
 
         return ResponseEntity.status(HttpStatus.OK)

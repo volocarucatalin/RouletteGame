@@ -1,4 +1,5 @@
 package com.game.roullet.request;
+
 import java.io.Serializable;
 
 public class RoomRequest implements Serializable {

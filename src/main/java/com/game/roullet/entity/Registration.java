@@ -11,10 +11,10 @@ public class Registration {
 
     @Id
     @Column
-    private  Integer playerId;
+    private Integer playerId;
 
     @Column
-    private  Integer roomId;
+    private Integer roomId;
 
     @Column
     private String role;
