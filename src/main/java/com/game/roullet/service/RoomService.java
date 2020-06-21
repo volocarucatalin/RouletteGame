@@ -28,7 +28,9 @@ public class RoomService {
     }
 
     public int createRoom(int playerId) {
-        playerRepository.findById(playerId).get();
+        if (playerRepository.findById(playerId).isEmpty()) {
+            throw new RuntimeException("This player with id : " + playerId + " does not exist!");
+        }
 
         Optional<Registration> current = registrationRepository.findByPlayerId(playerId);
 
