@@ -1,5 +1,6 @@
 package com.game.roullet.service;
 
+import com.game.roullet.entity.Player;
 import com.game.roullet.entity.Registration;
 import com.game.roullet.entity.Room;
 import com.game.roullet.repository.PlayerRepository;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -28,30 +28,35 @@ public class RoomService {
     }
 
     public int createRoom(int playerId) {
+        Player player = new Player();
+
         if (playerRepository.findById(playerId).isEmpty()) {
             throw new RuntimeException("This player with id : " + playerId + " does not exist!");
+
         }
 
-        Optional<Registration> current = registrationRepository.findByPlayerId(playerId);
 
-        if (current.isPresent()) {
-            throw new RuntimeException("Player is already present in room with id : " + current.get().getRoomId());
+        if (registrationRepository.findByPlayerId(playerId).isPresent()) {
+            int roomId = player.getRegistration().getRoom().getId();
+            throw new RuntimeException("Player is already present in room with id : " + roomId);
         }
+
 
         Room room = new Room();
-
+        room.setId(playerId);
         roomRepository.save(room);
 
         Registration registration = new Registration();
 
         registration.setPlayerId(playerId);
-        registration.setRoomId(room.getRoom());
+        registration.setPlayer(player);
+        registration.setRoom(room);
         registration.setRole("Admin");
 
         registrationRepository.save(registration);
 
 
-        return room.getRoom();
+        return room.getId();
     }
 
 
@@ -59,28 +64,42 @@ public class RoomService {
 
         JoinResponse joinResponse = new JoinResponse();
         joinResponse.setRoomStatus(false);
-        List<Registration> registrationList = registrationRepository.findAllRegistrationByRoomId(roomId);
+
 
         if (playerRepository.findById(playerId).isEmpty()) {
             throw new RuntimeException("Player dose not exist");
         }
-        if (roomRepository.findById(roomId).isEmpty()) {
-            throw new RuntimeException("Room dose not is closed or dose not exist : " + joinResponse);
-        }
 
-        if (registrationList.size() >= 4) {
+        List<Registration> registrationList = registrationRepository.findAll();
+
+        int numberOdPlayers = 0;
+        Room room = new Room();
+
+        for (Registration registration : registrationList) {
+            if (registration.getRoom().getId().equals(roomId)) {
+                throw new RuntimeException("Room dose not exist : " + joinResponse);
+            }
+            if (registration.getPlayer().getPlayerId() == playerId) {
+                throw new RuntimeException("Player is registered already to another room");
+            }
+            if (registration.getRoom().getId() == roomId) {
+                numberOdPlayers = numberOdPlayers + 1;
+
+            }
+
+        }
+        if (numberOdPlayers > 3) {
             throw new RuntimeException("Room is full");
         }
-        Optional<Registration> player = registrationRepository.findByPlayerId(playerId);
-        if (player.isPresent()) {
-            throw new RuntimeException("Player is registered already to another room");
-        }
+
+        room.setId(roomId);
+
 
         joinResponse.setRoomStatus(true);
 
         Registration registration = new Registration();
-        registration.setRoomId(roomId);
         registration.setPlayerId(playerId);
+        registration.setRoom(room);
         registration.setRole("User");
 
         registrationRepository.save(registration);

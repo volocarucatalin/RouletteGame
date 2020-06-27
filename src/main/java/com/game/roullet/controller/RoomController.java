@@ -42,6 +42,11 @@ public class RoomController {
                 .body(joinResponse);
 
     }
-    // @PostMapping("/players/{playerId}/rooms/{roomId}/")
+
+    /* @PostMapping("/players/{playerId}/rooms/{roomId}/")
+    public ResponseEntity<?> leaveRoom(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId){
+        LeaveResponse leaveResponse = new LeaveResponse();
+
+     }*/
 
 }
