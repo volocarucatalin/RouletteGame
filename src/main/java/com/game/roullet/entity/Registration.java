@@ -1,18 +1,17 @@
 package com.game.roullet.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "registrations")
-public class Registration {
+public class Registration implements Serializable {
 
     @Id
-    @Column
+    @GeneratedValue
     private Integer playerId;
 
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name ="playerId")
+    @OneToOne(mappedBy = "registration")
     private Player player;
 
     @Column

@@ -1,7 +1,6 @@
 package com.game.roullet.controller;
 
 import com.game.roullet.request.RoomRequest;
-import com.game.roullet.response.JoinResponse;
 import com.game.roullet.response.RoomResponse;
 import com.game.roullet.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +34,8 @@ public class RoomController {
 
     @PostMapping("/players/{playerId}/rooms/{roomId}/registrations")
     public ResponseEntity<?> joinRoom(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
-        JoinResponse joinResponse = new JoinResponse();
-
-        joinResponse = roomService.joinRoom(playerId, roomId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(joinResponse);
+                .body(roomService.joinRoom(playerId, roomId));
 
     }
-
-    /* @PostMapping("/players/{playerId}/rooms/{roomId}/")
-    public ResponseEntity<?> leaveRoom(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId){
-        LeaveResponse leaveResponse = new LeaveResponse();
-
-     }*/
-
 }

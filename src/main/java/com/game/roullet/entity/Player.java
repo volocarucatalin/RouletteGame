@@ -2,6 +2,7 @@ package com.game.roullet.entity;
 
 import javax.persistence.*;
 
+
 @Entity
 @Table(name = "players")
 public class Player {
@@ -9,17 +10,20 @@ public class Player {
     @Id
     @GeneratedValue
     @Column
-    private Integer playerId;
+    private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "player", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    @MapsId
     Registration registration;
 
-    public Integer getPlayerId() {
-        return playerId;
+
+    public Integer getId() {
+        return id;
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Registration getRegistration() {

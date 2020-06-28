@@ -16,9 +16,10 @@ public class PlayerService {
     }
 
     public int createPlayer() {
+
         Player player = new Player();
 
 
-        return playerRepository.save(player).getPlayerId();
+        return playerRepository.save(player).getId();
     }
 }
