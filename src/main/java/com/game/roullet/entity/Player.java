@@ -8,13 +8,12 @@ import javax.persistence.*;
 public class Player {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_generator")
+    @SequenceGenerator(name="player_generator", sequenceName = "player_seq", allocationSize=50)
     @Column
     private Integer id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
-    @MapsId
     Registration registration;
 
 

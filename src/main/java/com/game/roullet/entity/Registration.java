@@ -8,17 +8,17 @@ import java.io.Serializable;
 public class Registration implements Serializable {
 
     @Id
-    @GeneratedValue
+    @Column
     private Integer playerId;
 
-    @OneToOne(mappedBy = "registration")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "registration")
     private Player player;
 
     @Column
     private String role;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @ManyToOne( cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "room")
     private Room room;
 
     public Integer getPlayerId() {

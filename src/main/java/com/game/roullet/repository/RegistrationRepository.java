@@ -16,4 +16,8 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
     List<Registration> findAllRegistrationByRoomId(int roomId);
 
     Optional<Registration> findByPlayerIdAndRoomId(Integer playerId, Integer roomId);
+
+    void deleteAllByRoomId(Integer roomId);
+
+    void deleteByPlayerId(Integer playerId);
 }
