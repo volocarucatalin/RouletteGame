@@ -6,10 +6,7 @@ import com.game.roullet.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -37,5 +34,15 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(roomService.joinRoom(playerId, roomId));
 
+    }
+
+    @DeleteMapping("/players/{playerId}/rooms/{roomId}")
+    public void leaveRoom(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
+        roomService.leaveRoom(playerId, roomId);
+    }
+
+    @PutMapping("/rooms/{roomId}")
+    public ResponseEntity<?> makeBet(@PathVariable(value = "roomId") int roomId){
+                //TODO
     }
 }

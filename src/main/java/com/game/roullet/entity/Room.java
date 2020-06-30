@@ -9,12 +9,13 @@ import java.util.List;
 public class Room {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "room_generator")
+    @SequenceGenerator(name="room_generator", sequenceName = "room_seq", allocationSize=50)
     @Column
     private Integer id;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "room", fetch = FetchType.LAZY)
     private List<Registration> registrations;
 
 
@@ -34,4 +35,6 @@ public class Room {
     public void setRegistrations(List<Registration> registrations) {
         this.registrations = registrations;
     }
+
+
 }
