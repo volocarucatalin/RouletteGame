@@ -6,6 +6,8 @@ import com.game.roullet.entity.Room;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
+import com.game.roullet.request.BetRequest;
+import com.game.roullet.response.BetResponse;
 import com.game.roullet.response.JoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,6 @@ public class RoomService {
 
 
         Registration registration = new Registration();
-        registration.setPlayerId(playerId);
         registration.setPlayer(player);
         registration.setRole("Admin");
         registration.setRoom(room);
@@ -90,7 +91,6 @@ public class RoomService {
         }
 
         Registration registration = new Registration();
-        registration.setPlayerId(playerId);
         registration.setPlayer(player);
         registration.setRoom(room);
         registration.setRole("User");
@@ -112,7 +112,11 @@ public class RoomService {
         }
         Player player = playerOptional.get();
 
-        if (player.getRegistration() != null) {
+        if (player.getRegistration() == null) {
+            throw new RuntimeException("Player is not register in any place!");
+        }
+
+        if (player.getRegistration().getRoom().getId() != roomId) {
             throw new RuntimeException("Player is registered already to another room");
         }
 
@@ -129,20 +133,21 @@ public class RoomService {
             throw new RuntimeException("Player is not registered to this room");
         }
 
-        Registration registration = registrationOptional.get();
-
-        registration.setPlayer(null);
-        registration.setRoom(null);
-
-        if (registration.getRole().equals("Admin")) {
-            List<Registration> registrationList = room.getRegistrations();
-            room.setRegistrations(null);
-            roomRepository.save(room);
-            registrationRepository.deleteAllByRoomId(null);
+        if (registrationOptional.get().getRole().equals("Admin")) {
+            room.getRegistrations().clear();
+            registrationRepository.deleteAllByRoom(room);
+            registrationRepository.flush();
         }
-        if (registration.getRole().equals("User")) {
-            registrationRepository.delete(registration);
+        if (registrationOptional.get().getRole().equals("User")) {
+            room.getRegistrations().remove(registrationOptional.get());
+            registrationRepository.delete(registrationOptional.get());
+            registrationRepository.flush();
         }
 
+    }
+
+    public BetResponse makeBet(int roomId, BetRequest betRequest) {
+        Optional<Registration> registrationOptional;
+        return null;
     }
 }

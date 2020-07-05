@@ -1,6 +1,6 @@
 package com.game.roullet.controller;
 
-import com.game.roullet.response.ResponsePlayer;
+import com.game.roullet.response.PlayerResponse;
 import com.game.roullet.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class PlayerController {
 
     @PostMapping("/players")
     public ResponseEntity<?> createPlayer() {
-        ResponsePlayer responsePlayer = new ResponsePlayer(playerService.createPlayer());
+        PlayerResponse responsePlayer = new PlayerResponse(playerService.createPlayer());
 
 
         return ResponseEntity.status(HttpStatus.OK)

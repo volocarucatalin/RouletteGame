@@ -1,6 +1,7 @@
 package com.game.roullet.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 @Entity
@@ -9,12 +10,15 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_generator")
-    @SequenceGenerator(name="player_generator", sequenceName = "player_seq", allocationSize=50)
+    @SequenceGenerator(name = "player_generator", sequenceName = "player_seq", allocationSize = 50)
     @Column
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    Registration registration;
+    @Column
+    private Integer balance = 100;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "player")
+    private Registration registration;
 
 
     public Integer getId() {
@@ -31,5 +35,21 @@ public class Player {
 
     public void setRegistration(Registration registration) {
         this.registration = registration;
+    }
+
+    public void addAmount(int amount) {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+        Player player = (Player) o;
+        return getId().equals(player.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
