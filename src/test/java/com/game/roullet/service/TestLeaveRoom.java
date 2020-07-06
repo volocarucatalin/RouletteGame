@@ -114,7 +114,6 @@ public class TestLeaveRoom {
     public void testLeaveRoomUser() {
         registration.setRoom(room);
         registration.setPlayer(player);
-        registration.setPlayerId(PLAYER_ID);
         registration.setRole(USER);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }
@@ -123,7 +122,6 @@ public class TestLeaveRoom {
     public void testLeaveRoomAdmin() {
         registration.setRoom(room);
         registration.setPlayer(player);
-        registration.setPlayerId(PLAYER_ID);
         registration.setRole(ADMIN);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }

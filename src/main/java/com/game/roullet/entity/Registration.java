@@ -2,31 +2,35 @@ package com.game.roullet.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "registrations")
 public class Registration implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_generator")
+    @SequenceGenerator(name = "registration_generator", sequenceName = "registration_seq", allocationSize = 50)
     @Column
-    private Integer playerId;
+    private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "registration")
+    @OneToOne(cascade =CascadeType.PERSIST)
+    @JoinColumn(name = "player_id")
     private Player player;
 
     @Column
     private String role;
 
-    @ManyToOne( cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "room")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "room_id")
     private Room room;
 
-    public Integer getPlayerId() {
-        return playerId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getRole() {
@@ -51,5 +55,18 @@ public class Registration implements Serializable {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Registration)) return false;
+        Registration that = (Registration) o;
+        return getId().equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

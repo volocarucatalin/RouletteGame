@@ -1,6 +1,7 @@
 package com.game.roullet.repository;
 
 import com.game.roullet.entity.Registration;
+import com.game.roullet.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
     void deleteAllByRoomId(Integer roomId);
 
     void deleteByPlayerId(Integer playerId);
+
+    void deleteAllByRoom(Room room);
 }
