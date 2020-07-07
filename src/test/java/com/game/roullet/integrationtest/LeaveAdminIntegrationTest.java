@@ -70,8 +70,9 @@ public class LeaveAdminIntegrationTest {
         create2.setRoom(room);
         create2.setPlayer(player2);
         create2.setRole("Admin");
-        registrationRepository.save(create2);
-        entityManager.flush();
+        ;
+        registrationRepository.saveAndFlush(create2);
+
 
         //Create join a room
         room = roomRepository.findById(2).get();
