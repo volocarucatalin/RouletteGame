@@ -40,8 +40,7 @@ public class RoomService {
         }
         Player player = playerOptional.get();
 
-
-        if (registrationRepository.findByPlayerId(playerId).isPresent()) {
+        if (registrationRepository.findByPlayerId(playerId) != null) {
             int roomId = player.getRegistration().getRoom().getId();
             throw new RuntimeException("Player is already present in room with id : " + roomId);
         }
@@ -116,33 +115,32 @@ public class RoomService {
             throw new RuntimeException("Player is not register in any place!");
         }
 
-        if (player.getRegistration().getRoom().getId() != roomId) {
-            throw new RuntimeException("Player is registered already to another room");
-        }
-
         Optional<Room> roomOptional = roomRepository.findById(roomId);
         if (roomOptional.isEmpty()) {
             throw new RuntimeException("Room dose not exist ");
         }
 
+        if (player.getRegistration().getRoom().getId() != roomId) {
+            throw new RuntimeException("Player is registered already to another room");
+        }
+
         Room room = roomOptional.get();
 
-        Optional<Registration> registrationOptional = registrationRepository.findByPlayerIdAndRoomId(playerId, roomId);
+        Registration registration = registrationRepository.findByPlayerIdAndRoomId(playerId, roomId);
 
-        if (registrationOptional.isEmpty()) {
+        if (registration == null) {
             throw new RuntimeException("Player is not registered to this room");
         }
 
-        if (registrationOptional.get().getRole().equals("Admin")) {
+        if (registration.getRole().equals("Admin")) {
             room.getRegistrations().clear();
             registrationRepository.deleteAllByRoom(room);
         }
 
-        if (registrationOptional.get().getRole().equals("User")) {
-            room.getRegistrations().remove(registrationOptional.get());
-            registrationRepository.deleteById(registrationOptional.get().getId());
+        if (registration.getRole().equals("User")) {
+            room.getRegistrations().remove(registration);
+            registrationRepository.deleteById(registration.getId());
         }
-
     }
 
     public BetResponse makeBet(int roomId, BetRequest betRequest) {

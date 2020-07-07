@@ -23,13 +23,14 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TestLeaveRoom {
+public class RouletteServiceLeaveRoomTest {
     public static final String PLAYER_DOSE_NOT_EXIST = "Player dose not exist";
     public static final String ROOM_DOSE_NOT_EXIST_ = "Room dose not exist ";
     public static final int INVALID_PLAYER = 2;
     public static final int VALID_PLAYER = 1;
     public static final int VALID_ROOM = 1;
-    public static final int INVALID_ROOM = 2;
+    public static final int INVALID_ROOM = 3;
+    public static final int VALID_SECOND_ROOM = 2;
     public static final String ADMIN = "Admin";
     public static final String USER = "User";
     public static final int PLAYER_ID = 1;
@@ -52,37 +53,41 @@ public class TestLeaveRoom {
 
     Optional<Registration> registrationOptional;
 
-    Registration registration;
+    Registration registration = new Registration();
 
     Optional<Player> optionalEmpty;
 
-    Room room;
+    Room room = new Room();
+
+    Room roomSecond = new Room();
 
     Optional<Room> roomOptionalEmpty;
 
     Optional<Room> roomOptional;
 
-    Player player;
+    Optional<Room> roomSecondOptional;
+
+    Player player = new Player();
 
     Optional<Player> playerOptional;
 
     @Before
     public void init() {
-        registration = new Registration();
         registrationOptional = Optional.of(registration);
         optionalEmpty = Optional.empty();
-        room = new Room();
-        room.setId(1);
+        room.setId(VALID_ROOM);
         roomOptionalEmpty = Optional.empty();
-        player = new Player();
-        player.setId(1);
+        roomSecond.setId(VALID_SECOND_ROOM);
+        roomSecondOptional = Optional.of(roomSecond);
+        player.setId(VALID_PLAYER);
         playerOptional = Optional.of(player);
         roomOptional = Optional.of(room);
         when(playerRepository.findById(INVALID_PLAYER)).thenReturn(optionalEmpty);
         when(playerRepository.findById(VALID_PLAYER)).thenReturn(playerOptional);
         when(roomRepository.findById(VALID_ROOM)).thenReturn(roomOptional);
+        when(roomRepository.findById(VALID_SECOND_ROOM)).thenReturn(roomSecondOptional);
         when(roomRepository.findById(INVALID_ROOM)).thenReturn(roomOptionalEmpty);
-        when(registrationRepository.findByPlayerIdAndRoomId(PLAYER_ID, ROOM_ID)).thenReturn(registrationOptional);
+        when(registrationRepository.findByPlayerIdAndRoomId(PLAYER_ID, ROOM_ID)).thenReturn(registration);
     }
 
     @Test
@@ -94,17 +99,19 @@ public class TestLeaveRoom {
 
     @Test
     public void testLeaveRoomPlayerAnotherRoom() {
-        Registration registration = new Registration();
         registration.setPlayer(player);
         registration.setRoom(room);
+        registration.setRole("Admin");
         player.setRegistration(registration);
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage(PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM);
-        roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
+        roomService.leaveRoom(VALID_PLAYER, VALID_SECOND_ROOM);
     }
 
     @Test
     public void testLeaveRoomNotExist() {
+        player.setRegistration(registration);
+        registration.setRoom(room);
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage(ROOM_DOSE_NOT_EXIST_);
         roomService.leaveRoom(VALID_PLAYER, INVALID_ROOM);
@@ -115,6 +122,7 @@ public class TestLeaveRoom {
         registration.setRoom(room);
         registration.setPlayer(player);
         registration.setRole(USER);
+        player.setRegistration(registration);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }
 
@@ -123,9 +131,9 @@ public class TestLeaveRoom {
         registration.setRoom(room);
         registration.setPlayer(player);
         registration.setRole(ADMIN);
+        player.setRegistration(registration);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }
-
 }
 
 
