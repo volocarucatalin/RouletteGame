@@ -1,5 +1,6 @@
 package com.game.roullet.service;
 
+import com.game.roullet.entity.Bet;
 import com.game.roullet.entity.Player;
 import com.game.roullet.entity.Registration;
 import com.game.roullet.entity.Room;
@@ -7,7 +8,6 @@ import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
 import com.game.roullet.request.BetRequest;
-import com.game.roullet.response.BetResponse;
 import com.game.roullet.response.JoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -143,8 +143,42 @@ public class RoomService {
         }
     }
 
-    public BetResponse makeBet(int roomId, BetRequest betRequest) {
-        Optional<Registration> registrationOptional;
-        return null;
+    public void makeBet(int playerId , int roomId, BetRequest betRequest) {
+
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
+            throw new RuntimeException("Player dose not exist");
+        }
+        Player player = playerOptional.get();
+
+        if (player.getRegistration() == null) {
+            throw new RuntimeException("Player is not register in any place!");
+        }
+
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
+        if (roomOptional.isEmpty()) {
+            throw new RuntimeException("Room dose not exist ");
+        }
+
+        Room room = roomOptional.get();
+
+        if(player.getRegistration().getRoom().getId() != roomId){
+            throw new RuntimeException("Player is in another room");
+        }
+
+        Bet bet = new Bet();
+
+         bet.setBetAmount(betRequest.getBetAmount());
+         bet.setBetType(betRequest.getBetType());
+         bet.setBetTypeValue(betRequest.getBetTypeValue());
+         bet.setPlayer(player);
+
+         if(player.getBalance() < bet.getBetAmount()){
+             throw new RuntimeException("Your Balance is to low");
+         }
+
+         int newBalance = player.getBalance() - bet.getBetAmount();
+
+         player.setBalance(newBalance);
     }
 }

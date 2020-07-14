@@ -32,6 +32,6 @@ public class PlayerService {
             throw new RuntimeException("Player not exist");
         }
         Player player = playerOptional.get();
-                player.addAmount(amount);
+              //  player.addAmount(amount);
     }
 }

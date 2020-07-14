@@ -1,6 +1,8 @@
 package com.game.roullet.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -20,6 +22,8 @@ public class Player {
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "player")
     private Registration registration;
 
+    @OneToMany(cascade = CascadeType.ALL,  mappedBy = "player")
+    private List<Bet> bet = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -37,7 +41,23 @@ public class Player {
         this.registration = registration;
     }
 
-    public void addAmount(int amount) {
+    /*public void addAmount(int amount) {
+    }*/
+
+    public Integer getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
+    }
+
+    public List<Bet> getBet() {
+        return bet;
+    }
+
+    public void setBet(List<Bet> bet) {
+        this.bet = bet;
     }
 
     @Override
