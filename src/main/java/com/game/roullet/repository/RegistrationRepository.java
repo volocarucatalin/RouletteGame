@@ -8,16 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Integer> {
 
+    Registration findByPlayerId(Integer playerId);
 
-    Optional<Registration> findByPlayerId(Integer playerId);
-
-    Optional<Registration> findByPlayerIdAndRoomId(Integer playerId, Integer roomId);
+    Registration findByPlayerIdAndRoomId(Integer playerId, Integer roomId);
 
     @Modifying
     @Query(value = "delete from Registration registration where registration.room=:room")

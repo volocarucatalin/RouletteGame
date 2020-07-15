@@ -2,7 +2,6 @@ package com.game.roullet.controller;
 
 import com.game.roullet.request.BetRequest;
 import com.game.roullet.request.RoomRequest;
-import com.game.roullet.response.BetResponse;
 import com.game.roullet.response.RoomResponse;
 import com.game.roullet.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +42,8 @@ public class RoomController {
         roomService.leaveRoom(playerId, roomId);
     }
 
-    @PutMapping("/rooms/{roomId}")
-    public ResponseEntity<?> makeBet(@PathVariable(value = "roomId" ) int roomId, @RequestBody BetRequest betRequest){
-            BetResponse success = roomService.makeBet(roomId , betRequest);
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(success);
+    @PostMapping("/players/{playerId}/rooms/{roomId}/bets")
+    public void makeBet(@RequestBody BetRequest betRequest, @PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
+        roomService.makeBet(playerId, roomId, betRequest);
     }
 }

@@ -1,13 +1,14 @@
 package com.game.roullet.service;
 
+import com.game.roullet.entity.Bet;
 import com.game.roullet.entity.Player;
 import com.game.roullet.entity.Registration;
 import com.game.roullet.entity.Room;
+import com.game.roullet.repository.BetRepository;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
 import com.game.roullet.request.BetRequest;
-import com.game.roullet.response.BetResponse;
 import com.game.roullet.response.JoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,14 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final PlayerRepository playerRepository;
     private final RegistrationRepository registrationRepository;
+    private final BetRepository betRepository;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository) {
+    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository) {
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
         this.registrationRepository = registrationRepository;
+        this.betRepository = betRepository;
     }
 
     public int createRoom(int playerId) {
@@ -40,8 +43,7 @@ public class RoomService {
         }
         Player player = playerOptional.get();
 
-
-        if (registrationRepository.findByPlayerId(playerId).isPresent()) {
+        if (registrationRepository.findByPlayerId(playerId) != null) {
             int roomId = player.getRegistration().getRoom().getId();
             throw new RuntimeException("Player is already present in room with id : " + roomId);
         }
@@ -116,8 +118,44 @@ public class RoomService {
             throw new RuntimeException("Player is not register in any place!");
         }
 
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
+        if (roomOptional.isEmpty()) {
+            throw new RuntimeException("Room dose not exist ");
+        }
+
         if (player.getRegistration().getRoom().getId() != roomId) {
             throw new RuntimeException("Player is registered already to another room");
+        }
+
+        Room room = roomOptional.get();
+
+        Registration registration = registrationRepository.findByPlayerIdAndRoomId(playerId, roomId);
+
+        if (registration == null) {
+            throw new RuntimeException("Player is not registered to this room");
+        }
+
+        if (registration.getRole().equals("Admin")) {
+            room.getRegistrations().clear();
+            registrationRepository.deleteAllByRoom(room);
+        }
+
+        if (registration.getRole().equals("User")) {
+            room.getRegistrations().remove(registration);
+            registrationRepository.deleteById(registration.getId());
+        }
+    }
+
+    public void makeBet(int playerId , int roomId, BetRequest betRequest) {
+
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
+            throw new RuntimeException("Player dose not exist");
+        }
+        Player player = playerOptional.get();
+
+        if (player.getRegistration() == null) {
+            throw new RuntimeException("Player is not register in any place!");
         }
 
         Optional<Room> roomOptional = roomRepository.findById(roomId);
@@ -127,26 +165,24 @@ public class RoomService {
 
         Room room = roomOptional.get();
 
-        Optional<Registration> registrationOptional = registrationRepository.findByPlayerIdAndRoomId(playerId, roomId);
-
-        if (registrationOptional.isEmpty()) {
-            throw new RuntimeException("Player is not registered to this room");
+        if(player.getRegistration().getRoom().getId() != roomId){
+            throw new RuntimeException("Player is in another room");
         }
 
-        if (registrationOptional.get().getRole().equals("Admin")) {
-            room.getRegistrations().clear();
-            registrationRepository.deleteAllByRoom(room);
-        }
+        Bet bet = new Bet();
 
-        if (registrationOptional.get().getRole().equals("User")) {
-            room.getRegistrations().remove(registrationOptional.get());
-            registrationRepository.deleteById(registrationOptional.get().getId());
-        }
+         bet.setBetAmount(betRequest.getBetAmount());
+         bet.setBetType(betRequest.getBetType());
+         bet.setBetTypeValue(betRequest.getBetTypeValue());
+         bet.setPlayer(player);
 
-    }
+         if(player.getBalance() < bet.getBetAmount()){
+             throw new RuntimeException("Your Balance is to low");
+         }
 
-    public BetResponse makeBet(int roomId, BetRequest betRequest) {
-        Optional<Registration> registrationOptional;
-        return null;
+         int newBalance = player.getBalance() - bet.getBetAmount();
+
+         player.setBalance(newBalance);
+         betRepository.save(bet);
     }
 }

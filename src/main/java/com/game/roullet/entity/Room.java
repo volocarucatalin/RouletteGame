@@ -20,7 +20,6 @@ public class Room {
     @OneToMany(cascade = CascadeType.ALL,  mappedBy = "room")
     private List<Registration> registrations = new ArrayList<>();
 
-   // private List<Bet> bets = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -39,17 +38,6 @@ public class Room {
         this.registrations = registrations;
     }
 
-    /*public List<Bet> getBets() {
-        return bets;
-    }
-
-    public void addBet(Bet bet) {
-        this.bets.add(bet);
-    }
-
-    public void removeAllBets() {
-        this.bets = new ArrayList<>();
-    }*/
 
     @Override
     public boolean equals(Object o) {

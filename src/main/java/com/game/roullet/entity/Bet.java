@@ -6,7 +6,8 @@ import javax.persistence.*;
 @Table(name = "bets")
 public class Bet {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bet_generator")
+    @SequenceGenerator(name = "bet_generator", sequenceName = "bet_seq", allocationSize = 50)
     @Column
     int id;
 
@@ -17,20 +18,21 @@ public class Bet {
     private int betAmount;
 
     @Column
-    private int playerId;
-
-    @Column
     private int betTypeValue;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "player_id")
+    Player player;
 
     public Bet() {
     }
 
-
-    public Bet(String betType, int betAmount, int playerId, int betTypeValue) {
+    public Bet(int id, String betType, int betAmount, int betTypeValue, Player player) {
+        this.id = id;
         this.betType = betType;
         this.betAmount = betAmount;
-        this.playerId = playerId;
         this.betTypeValue = betTypeValue;
+        this.player = player;
     }
 
     public String getBetType() {
@@ -49,19 +51,27 @@ public class Bet {
         this.betAmount = betAmount;
     }
 
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
 
     public int getBetTypeValue() {
         return betTypeValue;
     }
 
     public void setBetTypeValue(int betTypeValue) {
-        this.betTypeValue = betTypeValue;
+        this.betTypeValue = betTypeValue;}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

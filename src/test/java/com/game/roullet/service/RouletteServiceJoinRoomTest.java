@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TestJoinRoom {
+public class RouletteServiceJoinRoomTest {
 
     public static final String PLAYER_DOSE_NOT_EXIST = "Player dose not exist";
     public static final String ROOM_DOSE_NOT_EXIST_ = "Room dose not exist ";
@@ -124,7 +124,7 @@ public class TestJoinRoom {
     public void testJoinRoom() {
         Registration registration = new Registration();
         room.setRegistrations(List.of(registration));
-        roomService.joinRoom(3, VALID_ROOM);
+        roomService.joinRoom(VALID_PLAYER, VALID_ROOM);
     }
 
 }
