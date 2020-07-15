@@ -4,6 +4,7 @@ import com.game.roullet.entity.Bet;
 import com.game.roullet.entity.Player;
 import com.game.roullet.entity.Registration;
 import com.game.roullet.entity.Room;
+import com.game.roullet.repository.BetRepository;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
@@ -23,12 +24,14 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final PlayerRepository playerRepository;
     private final RegistrationRepository registrationRepository;
+    private final BetRepository betRepository;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository) {
+    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository) {
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
         this.registrationRepository = registrationRepository;
+        this.betRepository = betRepository;
     }
 
     public int createRoom(int playerId) {
@@ -180,5 +183,6 @@ public class RoomService {
          int newBalance = player.getBalance() - bet.getBetAmount();
 
          player.setBalance(newBalance);
+         betRepository.save(bet);
     }
 }

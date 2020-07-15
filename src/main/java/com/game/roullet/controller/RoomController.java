@@ -42,8 +42,8 @@ public class RoomController {
         roomService.leaveRoom(playerId, roomId);
     }
 
-    @PutMapping("/players/{playerId}rooms/{roomId}/bets")
-    public void makeBet(@PathVariable(value = "playerId") int playerId,@PathVariable(value = "roomId" ) int roomId, @RequestBody BetRequest betRequest){
-             roomService.makeBet(playerId,roomId , betRequest);
+    @PostMapping("/players/{playerId}/rooms/{roomId}/bets")
+    public void makeBet(@RequestBody BetRequest betRequest, @PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
+        roomService.makeBet(playerId, roomId, betRequest);
     }
 }

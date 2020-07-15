@@ -1,14 +1,11 @@
 package com.game.roullet.request;
 
-import com.game.roullet.entity.Bet;
-
 import java.io.Serializable;
 
 public class BetRequest implements Serializable {
 
     private String betType;
     private int betAmount;
-    private int playerId;
     private int betTypeValue;
 
     public String getBetType() {
@@ -25,14 +22,6 @@ public class BetRequest implements Serializable {
 
     public void setBetAmount(int betAmount) {
         this.betAmount = betAmount;
-    }
-
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
     }
 
     public int getBetTypeValue() {
