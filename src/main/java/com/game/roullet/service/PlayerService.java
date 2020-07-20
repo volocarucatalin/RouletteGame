@@ -1,7 +1,6 @@
 package com.game.roullet.service;
 
 import com.game.roullet.entity.Player;
-import com.game.roullet.entity.Registration;
 import com.game.roullet.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,6 @@ public class PlayerService {
             throw new RuntimeException("Player not exist");
         }
         Player player = playerOptional.get();
-              //  player.addAmount(amount);
+                player.addAmount(amount);
     }
 }
