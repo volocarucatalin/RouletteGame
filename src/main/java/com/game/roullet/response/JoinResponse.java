@@ -3,13 +3,13 @@ package com.game.roullet.response;
 import java.io.Serializable;
 
 public class JoinResponse implements Serializable {
-    private boolean roomStatus;
+    private boolean success;
 
-    public boolean getRoomStatus() {
-        return roomStatus;
+    public boolean getSuccess() {
+        return success;
     }
 
-    public void setRoomStatus(boolean roomStatus) {
-        this.roomStatus = roomStatus;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }

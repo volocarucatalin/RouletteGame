@@ -6,7 +6,7 @@ public class BetRequest implements Serializable {
 
     private String betType;
     private int betAmount;
-    private int betTypeValue;
+    private byte number;
 
     public String getBetType() {
         return betType;
@@ -24,11 +24,11 @@ public class BetRequest implements Serializable {
         this.betAmount = betAmount;
     }
 
-    public int getBetTypeValue() {
-        return betTypeValue;
+    public byte getNumber() {
+        return number;
     }
 
-    public void setBetTypeValue(int betTypeValue) {
-        this.betTypeValue = betTypeValue;
+    public void setNumber(byte number) {
+        this.number = number;
     }
 }

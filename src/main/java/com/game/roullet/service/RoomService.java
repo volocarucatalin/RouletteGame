@@ -100,7 +100,7 @@ public class RoomService {
         registrationRepository.save(registration);
 
         JoinResponse joinResponse = new JoinResponse();
-        joinResponse.setRoomStatus(true);
+        joinResponse.setSuccess(true);
 
         return joinResponse;
 
@@ -174,7 +174,7 @@ public class RoomService {
 
          bet.setBetAmount(betRequest.getBetAmount());
          bet.setBetType(betRequest.getBetType());
-         bet.setBetTypeValue(betRequest.getBetTypeValue());
+         bet.setBetTypeValue(betRequest.getNumber());
          bet.setPlayer(player);
 
          if(player.getBalance() < bet.getBetAmount()){
