@@ -1,0 +1,155 @@
+package com.game.roullet.service;
+
+import com.game.roullet.entity.Bet;
+import com.game.roullet.entity.Player;
+import com.game.roullet.entity.Spin;
+import com.game.roullet.repository.SpinRepository;
+import com.game.roullet.rules.RouletteRules;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+
+@Service
+public class RouletteService implements RouletteRules {
+
+    final private PlayerService playerService;
+    final private SpinRepository spinRepository;
+
+    @Autowired
+    public RouletteService(PlayerService playerService, SpinRepository spinRepository, SpinRepository spinRepository1) {
+        this.playerService = playerService;
+        this.spinRepository = spinRepository1;
+    }
+
+    public Integer revealNumber() {
+        return (int) (Math.random() * ((MAX - MIN) + 1));
+    }
+
+    public void handleBets(Player player, Integer spinNumber) {
+        Spin spin = new Spin();
+
+        for (Bet bet : player.getBet()) {
+            switch (bet.getBetType()) {
+                case ROW:
+                    if (isRow(spinNumber, bet.getBetTypeValue())) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+
+                    }
+                    break;
+
+                case COLUMN:
+                    if (isColumn(spinNumber, bet.getBetTypeValue())) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+
+                    }
+                    break;
+
+                case ODD:
+                    if (isOdd(spinNumber)) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+
+                    }
+                    break;
+
+                case EVEN:
+                    if (!isOdd(spinNumber)) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+
+                    }
+                    break;
+
+                case RED:
+                    if (isRed(spinNumber)) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+
+                    }
+                    break;
+
+                case BLACK:
+                    if (!isRed(spinNumber)) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+
+                    }
+                    break;
+
+                case NUMBER:
+                    if (isTheSameNumber(spinNumber, bet.getBetTypeValue())) {
+                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 36));
+
+                    }
+                    break;
+
+                default:
+                    throw new RuntimeException("Bet type " + bet.getBetType() + " is not valid");
+            }
+
+        }
+        spin.setSpinNumber(spinNumber);
+        spin.setPlayerId(player.getId());
+        spin.setTime(new Date());
+        spinRepository.save(spin);
+
+    }
+
+
+
+    @Override
+    public boolean isRow(int spinNumber, int betTypeValue) {
+        if (spinNumber == 0) {
+            return false;
+        }
+        return (spinNumber % 3) == betTypeValue;
+    }
+
+    @Override
+    public boolean isColumn(int spinNumber, int betTypeValue) {
+        if (spinNumber == 0) {
+            return false;
+        }
+        if (isColumn3(spinNumber) && betTypeValue == 3) {
+            return true;
+        }
+        if (isColumn2(spinNumber) && betTypeValue == 2) {
+            return true;
+        }
+        if (isColumn1(spinNumber) && betTypeValue == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isOdd(int spinNumber) {
+        if (spinNumber == 0) {
+            return false;
+        }
+        return spinNumber % 2 != 0;
+    }
+
+
+    private boolean isColumn3(int spinNumber) {
+        return spinNumber >= 25 && spinNumber <= 36;
+    }
+
+    private boolean isColumn2(int spinNumber) {
+        return spinNumber >= 13 && spinNumber <= 24;
+    }
+
+    private boolean isColumn1(int spinNumber) {
+        return spinNumber >= 1 && spinNumber <= 12;
+    }
+
+    @Override
+    public boolean isTheSameNumber(int spinNumber, int betTypeValue) {
+        return spinNumber == betTypeValue;
+    }
+
+    @Override
+    public boolean isRed(int spinNumber) {
+        if (spinNumber == 0) {
+            return false;
+        }
+        return red.contains(spinNumber);
+    }
+}
