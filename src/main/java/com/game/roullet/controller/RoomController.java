@@ -4,6 +4,7 @@ import com.game.roullet.request.BetRequest;
 import com.game.roullet.request.RoomRequest;
 import com.game.roullet.response.RoomResponse;
 import com.game.roullet.service.RoomService;
+import com.game.roullet.service.WheelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class RoomController {
 
-    private RoomService roomService;
+    final private RoomService roomService;
+    final private WheelService wheelService;
 
     @Autowired
-    public RoomController(RoomService roomService) {
+    public RoomController(RoomService roomService, WheelService wheelService) {
         this.roomService = roomService;
+        this.wheelService = wheelService;
     }
 
     @PostMapping("/rooms")
@@ -45,5 +48,10 @@ public class RoomController {
     @PostMapping("/players/{playerId}/rooms/{roomId}/bets")
     public void makeBet(@RequestBody BetRequest betRequest, @PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
         roomService.makeBet(playerId, roomId, betRequest);
+    }
+
+    @PostMapping("/players/{playerId}/rooms/{roomId}/spins")
+    public void spinWheel(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
+        wheelService.spinWheel(playerId, roomId);
     }
 }

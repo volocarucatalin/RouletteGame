@@ -41,8 +41,9 @@ public class Player {
         this.registration = registration;
     }
 
-    /*public void addAmount(int amount) {
-    }*/
+    public void addAmount(int amount) {
+        balance = balance + amount;
+    }
 
     public Integer getBalance() {
         return balance;

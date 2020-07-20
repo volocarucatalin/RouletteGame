@@ -20,6 +20,9 @@ public class Room {
     @OneToMany(cascade = CascadeType.ALL,  mappedBy = "room")
     private List<Registration> registrations = new ArrayList<>();
 
+    @Column
+    String status = "open";
+
 
     public Integer getId() {
         return id;
@@ -38,6 +41,13 @@ public class Room {
         this.registrations = registrations;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public boolean equals(Object o) {

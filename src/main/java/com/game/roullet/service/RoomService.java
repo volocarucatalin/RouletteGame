@@ -138,6 +138,7 @@ public class RoomService {
         if (registration.getRole().equals("Admin")) {
             room.getRegistrations().clear();
             registrationRepository.deleteAllByRoom(room);
+            room.setStatus("close");
         }
 
         if (registration.getRole().equals("User")) {

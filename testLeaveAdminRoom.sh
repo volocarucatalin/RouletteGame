@@ -6,3 +6,5 @@ curl -d '{"playerId":1}' -H "Content-Type: application/json"  -X POST http://loc
 curl -d '{"playerId":2}' -H "Content-Type: application/json"  -X POST http://localhost:8080/rooms '\n'
 curl -X POST    http://localhost:8080/players/4/rooms/2/registrations '\n'
 curl -X POST    http://localhost:8080/players/3/rooms/2/registrations '\n'
+curl -d '{ "betType":"row","betAmount":20,"playerId":3,"betTypeValue":2}' -H "Content-Type: application/json"  -X POST http://localhost:8080/players/3/rooms/2/bets '\n'
+curl -x POST    http://localhost:8080/players/2/rooms/2/spins '\n'

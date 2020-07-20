@@ -20,6 +20,9 @@ public class Bet {
     @Column
     private int betTypeValue;
 
+    @Column
+    private String status = "open";
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "player_id")
     Player player;
@@ -73,5 +76,13 @@ public class Bet {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
