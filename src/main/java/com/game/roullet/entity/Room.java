@@ -23,6 +23,18 @@ public class Room {
     @Column
     String status = "open";
 
+    @OneToOne(cascade =CascadeType.PERSIST)
+    @JoinColumn(name = "spin_id")
+    Spin spin;
+
+
+    public Spin getSpin() {
+        return spin;
+    }
+
+    public void setSpin(Spin spin) {
+        this.spin = spin;
+    }
 
     public Integer getId() {
         return id;

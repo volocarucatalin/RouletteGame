@@ -54,4 +54,11 @@ public class RoomController {
     public void spinWheel(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
         wheelService.spinWheel(playerId, roomId);
     }
+
+    @GetMapping("/rooms/{roomId}")
+    public ResponseEntity<?> getRoom(@PathVariable(value = "roomId") int roomId){
+        return ResponseEntity.status( HttpStatus.OK)
+                .body(roomService.getRoom(roomId));
+
+    }
 }

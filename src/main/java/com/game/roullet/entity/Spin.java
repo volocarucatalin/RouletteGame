@@ -1,7 +1,5 @@
 package com.game.roullet.entity;
 
-import oracle.jdbc.driver.DatabaseError;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -25,6 +23,16 @@ public class Spin {
     @Column
     private Date time;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "spin")
+    private Room room;
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 
     public int getId() {
         return id;

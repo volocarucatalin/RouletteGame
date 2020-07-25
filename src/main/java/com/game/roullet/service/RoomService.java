@@ -9,6 +9,7 @@ import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
 import com.game.roullet.request.BetRequest;
+import com.game.roullet.response.GetRoomResponse;
 import com.game.roullet.response.JoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -185,5 +186,20 @@ public class RoomService {
 
          player.setBalance(newBalance);
          betRepository.save(bet);
+    }
+
+    public GetRoomResponse getRoom(int roomId) {
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if(optionalRoom.isEmpty()){
+            throw  new RuntimeException("Room dose not exist");
+        }
+        Room room = optionalRoom.get();
+
+        GetRoomResponse getRoomResponse = new GetRoomResponse();
+
+        getRoomResponse.setRoomStatus(room.getStatus());
+        getRoomResponse.setNumbersOfPlayers(room.getRegistrations().size());
+        getRoomResponse.setLastResult(room.);
+
     }
 }

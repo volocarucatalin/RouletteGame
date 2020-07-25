@@ -1,9 +1,6 @@
 package com.game.roullet.service;
 
-import com.game.roullet.entity.Bet;
-import com.game.roullet.entity.Player;
-import com.game.roullet.entity.Registration;
-import com.game.roullet.entity.Spin;
+import com.game.roullet.entity.*;
 import com.game.roullet.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +31,6 @@ public class WheelService {
 
     public void spinWheel(int playerId, int roomId) {
         Spin spin = new Spin();
-        //TODO: 1. Verify if its admin
         Optional<Player> playerOptional = playerRepository.findById(playerId);
 
         if (playerOptional.isEmpty()) {
@@ -49,7 +45,6 @@ public class WheelService {
             throw new RuntimeException("You cant spin the wheel because you are not Admin");
         }
 
-        //TODO: 2. Verify if the room its open
         if (roomId != registration.getRoom().getId()) {
             throw new RuntimeException("Player is registered in another room");
         }
@@ -59,21 +54,16 @@ public class WheelService {
             throw new RuntimeException("Room is close");
         }
 
-        //TODO: 3. Generate number
         int spinNumber = rouletteService.revealNumber();
 
-        //TODO: 4. Get all open bets from the room
         rouletteService.handleBets(player, spinNumber);
 
-        //TODO: 5. Iterate all best and close them
         List<Bet> betList = player.getBet();
         for (Bet bet : betList) {
             bet.setStatus("close");
             betRepository.save(bet);
         }
-
-
-
-
+        Room room = spin.getRoom();
+        room.setSpin(spin);
     }
 }
