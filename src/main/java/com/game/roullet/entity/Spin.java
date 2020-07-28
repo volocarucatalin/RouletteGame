@@ -21,18 +21,10 @@ public class Spin {
     private int playerId;
 
     @Column
+    private int roomId;
+
+    @Column
     private Date time;
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "spin")
-    private Room room;
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
 
     public int getId() {
         return id;
@@ -64,5 +56,13 @@ public class Spin {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 }

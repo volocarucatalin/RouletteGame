@@ -1,5 +1,7 @@
 package com.game.roullet.entity;
 
+import com.game.roullet.util.BetStatus;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,7 +23,8 @@ public class Bet {
     private int betTypeValue;
 
     @Column
-    private String status = "open";
+    @Enumerated(EnumType.STRING)
+    private BetStatus status = BetStatus.OPEN;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "player_id")
@@ -78,11 +81,11 @@ public class Bet {
         this.player = player;
     }
 
-    public String getStatus() {
+    public BetStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BetStatus status) {
         this.status = status;
     }
 }

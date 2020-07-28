@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SpinRepository extends JpaRepository<Spin, Integer> {
+    Spin findByRoomIdOrderByTime(int roomId);
 }

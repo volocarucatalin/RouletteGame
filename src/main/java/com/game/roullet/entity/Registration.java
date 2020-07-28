@@ -1,5 +1,7 @@
 package com.game.roullet.entity;
 
+import com.game.roullet.util.Role;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,7 +21,7 @@ public class Registration implements Serializable {
     private Player player;
 
     @Column
-    private String role;
+    private Role role;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "room_id")
@@ -33,11 +35,11 @@ public class Registration implements Serializable {
         this.id = id;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

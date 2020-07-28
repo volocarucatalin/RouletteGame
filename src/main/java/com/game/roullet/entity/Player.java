@@ -25,6 +25,11 @@ public class Player {
     @OneToMany(cascade = CascadeType.ALL,  mappedBy = "player")
     private List<Bet> bet = new ArrayList<>();
 
+    @OneToOne
+    @JoinTable(name = "registration", joinColumns = {@JoinColumn(name = "player_id")}, inverseJoinColumns = {
+            @JoinColumn(name = "room_id")})
+    private Room room;
+
     public Integer getId() {
         return id;
     }
@@ -59,6 +64,14 @@ public class Player {
 
     public void setBet(List<Bet> bet) {
         this.bet = bet;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     @Override
