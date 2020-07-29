@@ -19,14 +19,14 @@ public class Player {
     @Column
     private Integer balance = 100;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "player")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "player")
     private Registration registration;
 
-    @OneToMany(cascade = CascadeType.ALL,  mappedBy = "player")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private List<Bet> bet = new ArrayList<>();
 
     @OneToOne
-    @JoinTable(name = "registration", joinColumns = {@JoinColumn(name = "player_id")}, inverseJoinColumns = {
+    @JoinTable(name = "registrations", joinColumns = {@JoinColumn(name = "player_id")}, inverseJoinColumns = {
             @JoinColumn(name = "room_id")})
     private Room room;
 

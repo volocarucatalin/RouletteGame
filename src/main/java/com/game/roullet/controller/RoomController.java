@@ -51,13 +51,14 @@ public class RoomController {
     }
 
     @PostMapping("/players/{playerId}/rooms/{roomId}/spins")
-    public void spinWheel(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
-        wheelService.spinWheel(playerId, roomId);
+    public ResponseEntity<?> spinWheel(@PathVariable(value = "playerId") int playerId, @PathVariable(value = "roomId") int roomId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(wheelService.spinWheel(playerId, roomId));
     }
 
     @GetMapping("/rooms/{roomId}")
-    public ResponseEntity<?> getRoom(@PathVariable(value = "roomId") int roomId){
-        return ResponseEntity.status( HttpStatus.OK)
+    public ResponseEntity<?> getRoom(@PathVariable(value = "roomId") int roomId) {
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(roomService.getRoom(roomId));
 
     }

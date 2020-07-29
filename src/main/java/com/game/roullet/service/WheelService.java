@@ -2,13 +2,14 @@ package com.game.roullet.service;
 
 import com.game.roullet.entity.*;
 import com.game.roullet.repository.*;
+import com.game.roullet.response.SpinResponse;
 import com.game.roullet.util.Role;
 import com.game.roullet.util.RoomStatus;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,19 +21,21 @@ public class WheelService {
     private final BetRepository betRepository;
     private final RouletteService rouletteService;
     private final SpinRepository spinRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public WheelService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository, RouletteService rouletteService, SpinRepository spinRepository) {
+    public WheelService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository, RouletteService rouletteService, SpinRepository spinRepository, ModelMapper modelMapper) {
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
         this.registrationRepository = registrationRepository;
         this.betRepository = betRepository;
         this.rouletteService = rouletteService;
         this.spinRepository = spinRepository;
+        this.modelMapper = modelMapper;
     }
 
 
-    public void spinWheel(int playerId, int roomId) {
+    public SpinResponse spinWheel(int playerId, int roomId) {
         Spin spin = new Spin();
         Optional<Player> playerOptional = playerRepository.findById(playerId);
 
@@ -42,9 +45,8 @@ public class WheelService {
 
         Player player = playerOptional.get();
         Room room = player.getRoom();
-        Registration registration = player.getRegistration();
 
-        if ( player.getRegistration().getRole() == Role.USER) {
+        if (player.getRegistration().getRole() == Role.USER) {
             throw new RuntimeException("You cant spin the wheel because you are not Admin");
         }
 
@@ -56,16 +58,14 @@ public class WheelService {
             throw new RuntimeException("Room is close");
         }
 
-        int spinNumber = rouletteService.revealNumber();
+        byte spinNumber = rouletteService.revealNumber();
         spin.setSpinNumber(spinNumber);
         spin.setPlayerId(playerId);
         spin.setRoomId(roomId);
         spin.setTime(new Date());
         spinRepository.save(spin);
 
-        List<Player> players =  room.getPlayers();
-
-        rouletteService.handleBets(players, spinNumber);
-
+        rouletteService.handleBets(room.getPlayers(), spinNumber);
+        return modelMapper.map(spin, SpinResponse.class);
     }
 }

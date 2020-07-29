@@ -5,10 +5,10 @@ import com.game.roullet.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/players")
 public class PlayerController {
     private final PlayerService playerService;
 
@@ -17,13 +17,16 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @PostMapping("/players")
+    @PostMapping
     public ResponseEntity<?> createPlayer() {
         PlayerResponse responsePlayer = new PlayerResponse(playerService.createPlayer());
-
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responsePlayer);
+    }
 
+    @GetMapping
+    public ResponseEntity<?> getAllPlayers() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(playerService.getAllPlayers());
     }
 }
