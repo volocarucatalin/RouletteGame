@@ -1,16 +1,12 @@
 package com.game.roullet.service;
 
-import com.game.roullet.entity.Bet;
-import com.game.roullet.entity.Player;
-import com.game.roullet.entity.Registration;
-import com.game.roullet.entity.Room;
-import com.game.roullet.repository.BetRepository;
-import com.game.roullet.repository.PlayerRepository;
-import com.game.roullet.repository.RegistrationRepository;
-import com.game.roullet.repository.RoomRepository;
+import com.game.roullet.entity.*;
+import com.game.roullet.repository.*;
 import com.game.roullet.request.BetRequest;
 import com.game.roullet.response.GetRoomResponse;
 import com.game.roullet.response.JoinResponse;
+import com.game.roullet.util.Role;
+import com.game.roullet.util.RoomStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +22,15 @@ public class RoomService {
     private final PlayerRepository playerRepository;
     private final RegistrationRepository registrationRepository;
     private final BetRepository betRepository;
+    private final SpinRepository spinRepository;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository) {
+    public RoomService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository, SpinRepository spinRepository) {
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
         this.registrationRepository = registrationRepository;
         this.betRepository = betRepository;
+        this.spinRepository = spinRepository;
     }
 
     public int createRoom(int playerId) {
@@ -49,13 +47,10 @@ public class RoomService {
             throw new RuntimeException("Player is already present in room with id : " + roomId);
         }
 
-
         Room room = new Room();
-
-
         Registration registration = new Registration();
         registration.setPlayer(player);
-        registration.setRole("Admin");
+        registration.setRole(Role.ADMIN);
         registration.setRoom(room);
 
         room.setRegistrations(List.of(registration));
@@ -96,7 +91,7 @@ public class RoomService {
         Registration registration = new Registration();
         registration.setPlayer(player);
         registration.setRoom(room);
-        registration.setRole("User");
+        registration.setRole(Role.USER);
 
         registrationRepository.save(registration);
 
@@ -136,13 +131,13 @@ public class RoomService {
             throw new RuntimeException("Player is not registered to this room");
         }
 
-        if (registration.getRole().equals("Admin")) {
+        if (registration.getRole() == Role.ADMIN) {
             room.getRegistrations().clear();
             registrationRepository.deleteAllByRoom(room);
-            room.setStatus("close");
+            room.setStatus(RoomStatus.CLOSE);
         }
 
-        if (registration.getRole().equals("User")) {
+        if (registration.getRole() == Role.USER) {
             room.getRegistrations().remove(registration);
             registrationRepository.deleteById(registration.getId());
         }
@@ -160,14 +155,8 @@ public class RoomService {
             throw new RuntimeException("Player is not register in any place!");
         }
 
-        Optional<Room> roomOptional = roomRepository.findById(roomId);
-        if (roomOptional.isEmpty()) {
-            throw new RuntimeException("Room dose not exist ");
-        }
 
-        Room room = roomOptional.get();
-
-        if(player.getRegistration().getRoom().getId() != roomId){
+        if(player.getRoom().getId() != roomId){
             throw new RuntimeException("Player is in another room");
         }
 
@@ -198,8 +187,12 @@ public class RoomService {
         GetRoomResponse getRoomResponse = new GetRoomResponse();
 
         getRoomResponse.setRoomStatus(room.getStatus());
-        getRoomResponse.setNumbersOfPlayers(room.getRegistrations().size());
-        getRoomResponse.setLastResult(room.);
+        getRoomResponse.setNumberOfPlayers(room.getRegistrations().size());
+        Spin lastSpin = spinRepository.findByRoomIdOrderByTime(roomId);
+        getRoomResponse.setLastResult(lastSpin.getSpinNumber());
+        getRoomResponse.setLastResultTime(lastSpin.getTime());
+
+        return getRoomResponse;
 
     }
 }

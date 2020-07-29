@@ -1,27 +1,35 @@
 package com.game.roullet.response;
 
+import com.game.roullet.util.RoomStatus;
+
+import java.util.Date;
+
 public class GetRoomResponse {
-    private String roomStatus;
+    private RoomStatus roomStatus;
     private int numberOfPlayers;
     private int lastResult;
-    private Long lastResultTime;
+    private Date lastResultTime;
 
     public GetRoomResponse() {
     }
 
-    public GetRoomResponse(String roomStatus, int numberOfPlayers, int lastResult, Long lastResultTime) {
+    public GetRoomResponse(RoomStatus roomStatus, int numberOfPlayers, int lastResult, Date lastResultTime) {
         this.roomStatus = roomStatus;
         this.numberOfPlayers = numberOfPlayers;
         this.lastResult = lastResult;
         this.lastResultTime = lastResultTime;
     }
 
-    public String getRoomStatus() {
+    public RoomStatus getRoomStatus() {
         return roomStatus;
     }
 
-    public void setRoomStatus(String roomStatus) {
+    public void setRoomStatus(RoomStatus roomStatus) {
         this.roomStatus = roomStatus;
+    }
+
+    public Date getLastResultTime() {
+        return lastResultTime;
     }
 
     public int getNumberOfPlayers() {
@@ -40,11 +48,11 @@ public class GetRoomResponse {
         this.lastResult = lastResult;
     }
 
-    public Long getLastResultTime() {
-        return lastResultTime;
+    public Date getLastResultTime(Date lastResultTime) {
+        return this.lastResultTime;
     }
 
-    public void setLastResultTime(Long lastResultTime) {
+    public void setLastResultTime(Date lastResultTime) {
         this.lastResultTime = lastResultTime;
     }
 }

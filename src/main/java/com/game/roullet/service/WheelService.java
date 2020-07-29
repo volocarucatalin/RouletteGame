@@ -2,9 +2,12 @@ package com.game.roullet.service;
 
 import com.game.roullet.entity.*;
 import com.game.roullet.repository.*;
+import com.game.roullet.util.Role;
+import com.game.roullet.util.RoomStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,32 +41,31 @@ public class WheelService {
         }
 
         Player player = playerOptional.get();
+        Room room = player.getRoom();
         Registration registration = player.getRegistration();
-        String playerRole = registration.getRole();
 
-        if (playerRole.equals("User")) {
+        if ( player.getRegistration().getRole() == Role.USER) {
             throw new RuntimeException("You cant spin the wheel because you are not Admin");
         }
 
-        if (roomId != registration.getRoom().getId()) {
+        if (roomId != room.getId()) {
             throw new RuntimeException("Player is registered in another room");
         }
 
-        String roomStatus = registration.getRoom().getStatus();
-        if (roomStatus.equals("close")) {
+        if (room.getStatus() == RoomStatus.CLOSE) {
             throw new RuntimeException("Room is close");
         }
 
         int spinNumber = rouletteService.revealNumber();
+        spin.setSpinNumber(spinNumber);
+        spin.setPlayerId(playerId);
+        spin.setRoomId(roomId);
+        spin.setTime(new Date());
+        spinRepository.save(spin);
 
-        rouletteService.handleBets(player, spinNumber);
+        List<Player> players =  room.getPlayers();
 
-        List<Bet> betList = player.getBet();
-        for (Bet bet : betList) {
-            bet.setStatus("close");
-            betRepository.save(bet);
-        }
-        Room room = spin.getRoom();
-        room.setSpin(spin);
+        rouletteService.handleBets(players, spinNumber);
+
     }
 }

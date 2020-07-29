@@ -1,5 +1,7 @@
 package com.game.roullet.entity;
 
+import com.game.roullet.util.RoomStatus;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,24 +19,18 @@ public class Room {
     private Integer id;
 
 
-    @OneToMany(cascade = CascadeType.ALL,  mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private List<Registration> registrations = new ArrayList<>();
 
     @Column
-    String status = "open";
+    @Enumerated(EnumType.STRING)
+    private RoomStatus status = RoomStatus.OPEN;
 
-    @OneToOne(cascade =CascadeType.PERSIST)
-    @JoinColumn(name = "spin_id")
-    Spin spin;
+    @OneToMany
+    @JoinTable(name = "registration", joinColumns = {@JoinColumn(name = "room_id")}, inverseJoinColumns = {
+            @JoinColumn(name = "player_id")})
+    private List<Player> players = new ArrayList<>();
 
-
-    public Spin getSpin() {
-        return spin;
-    }
-
-    public void setSpin(Spin spin) {
-        this.spin = spin;
-    }
 
     public Integer getId() {
         return id;
@@ -53,12 +49,20 @@ public class Room {
         this.registrations = registrations;
     }
 
-    public String getStatus() {
+    public RoomStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(RoomStatus status) {
         this.status = status;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.game.roullet.entity.Room;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
+import com.game.roullet.util.Role;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,8 +32,6 @@ public class RouletteServiceLeaveRoomTest {
     public static final int VALID_ROOM = 1;
     public static final int INVALID_ROOM = 3;
     public static final int VALID_SECOND_ROOM = 2;
-    public static final String ADMIN = "Admin";
-    public static final String USER = "User";
     public static final int PLAYER_ID = 1;
     public static final int ROOM_ID = 1;
     public static final String PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM = "Player is registered already to another room";
@@ -101,7 +100,7 @@ public class RouletteServiceLeaveRoomTest {
     public void testLeaveRoomPlayerAnotherRoom() {
         registration.setPlayer(player);
         registration.setRoom(room);
-        registration.setRole("Admin");
+        registration.setRole(Role.ADMIN);
         player.setRegistration(registration);
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage(PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM);
@@ -121,7 +120,7 @@ public class RouletteServiceLeaveRoomTest {
     public void testLeaveRoomUser() {
         registration.setRoom(room);
         registration.setPlayer(player);
-        registration.setRole(USER);
+        registration.setRole(Role.USER);
         player.setRegistration(registration);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }
@@ -130,7 +129,7 @@ public class RouletteServiceLeaveRoomTest {
     public void testLeaveRoomAdmin() {
         registration.setRoom(room);
         registration.setPlayer(player);
-        registration.setRole(ADMIN);
+        registration.setRole(Role.ADMIN);
         player.setRegistration(registration);
         roomService.leaveRoom(VALID_PLAYER, VALID_ROOM);
     }

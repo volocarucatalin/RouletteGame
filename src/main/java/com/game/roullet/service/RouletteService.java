@@ -2,96 +2,88 @@ package com.game.roullet.service;
 
 import com.game.roullet.entity.Bet;
 import com.game.roullet.entity.Player;
-import com.game.roullet.entity.Spin;
-import com.game.roullet.repository.SpinRepository;
 import com.game.roullet.rules.RouletteRules;
+import com.game.roullet.util.BetStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class RouletteService implements RouletteRules {
 
     final private PlayerService playerService;
-    final private SpinRepository spinRepository;
 
     @Autowired
-    public RouletteService(PlayerService playerService, SpinRepository spinRepository, SpinRepository spinRepository1) {
+    public RouletteService(PlayerService playerService) {
         this.playerService = playerService;
-        this.spinRepository = spinRepository1;
     }
 
     public Integer revealNumber() {
         return (int) (Math.random() * ((MAX - MIN) + 1));
     }
 
-    public void handleBets(Player player, Integer spinNumber) {
-        Spin spin = new Spin();
+    public void handleBets(List<Player> players, Integer spinNumber) {
+        for (Player player : players) {
+            for (Bet bet : player.getBet()) {
+                switch (bet.getBetType()) {
+                    case ROW:
+                        if (isRow(spinNumber, bet.getBetTypeValue())) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
 
-        for (Bet bet : player.getBet()) {
-            switch (bet.getBetType()) {
-                case ROW:
-                    if (isRow(spinNumber, bet.getBetTypeValue())) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case COLUMN:
+                        if (isColumn(spinNumber, bet.getBetTypeValue())) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
 
-                case COLUMN:
-                    if (isColumn(spinNumber, bet.getBetTypeValue())) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case ODD:
+                        if (isOdd(spinNumber)) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
 
-                case ODD:
-                    if (isOdd(spinNumber)) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case EVEN:
+                        if (!isOdd(spinNumber)) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
 
-                case EVEN:
-                    if (!isOdd(spinNumber)) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case RED:
+                        if (isRed(spinNumber)) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
 
-                case RED:
-                    if (isRed(spinNumber)) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case BLACK:
+                        if (!isRed(spinNumber)) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
 
-                case BLACK:
-                    if (!isRed(spinNumber)) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                        }
+                        break;
 
-                    }
-                    break;
+                    case NUMBER:
+                        if (isTheSameNumber(spinNumber, bet.getBetTypeValue())) {
+                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 36));
 
-                case NUMBER:
-                    if (isTheSameNumber(spinNumber, bet.getBetTypeValue())) {
-                        playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 36));
+                        }
+                        break;
 
-                    }
-                    break;
+                    default:
+                        throw new RuntimeException("Bet type " + bet.getBetType() + " is not valid");
+                }
 
-                default:
-                    throw new RuntimeException("Bet type " + bet.getBetType() + " is not valid");
+                bet.setStatus(BetStatus.CLOSE);
             }
-
         }
-        spin.setSpinNumber(spinNumber);
-        spin.setPlayerId(player.getId());
-        spin.setTime(new Date());
-        spinRepository.save(spin);
-
     }
-
 
 
     @Override

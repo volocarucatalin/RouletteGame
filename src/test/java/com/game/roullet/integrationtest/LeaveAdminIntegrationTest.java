@@ -6,6 +6,7 @@ import com.game.roullet.entity.Room;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
+import com.game.roullet.util.Role;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +59,7 @@ public class LeaveAdminIntegrationTest {
         Registration create1 = new Registration();
         create1.setRoom(room);
         create1.setPlayer(player);
-        create1.setRole("Admin");
+        create1.setRole(Role.ADMIN);
         registrationRepository.save(create1);
         entityManager.flush();
 
@@ -69,7 +70,7 @@ public class LeaveAdminIntegrationTest {
         room.getRegistrations().add(create2);
         create2.setRoom(room);
         create2.setPlayer(player2);
-        create2.setRole("Admin");
+        create2.setRole(Role.ADMIN);
         ;
         registrationRepository.saveAndFlush(create2);
 
@@ -80,7 +81,7 @@ public class LeaveAdminIntegrationTest {
         room.getRegistrations().add(join2);
         join2.setRoom(room);
         join2.setPlayer(player3);
-        join2.setRole("User");
+        join2.setRole(Role.USER);
         roomRepository.save(room);
 
         //Create join a room
@@ -89,7 +90,7 @@ public class LeaveAdminIntegrationTest {
         room.getRegistrations().add(join3);
         join3.setRoom(room);
         join3.setPlayer(player4);
-        join3.setRole("User");
+        join3.setRole(Role.USER);
         roomRepository.save(room);
 
 
