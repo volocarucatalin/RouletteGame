@@ -27,7 +27,7 @@ public class Room {
     private RoomStatus status = RoomStatus.OPEN;
 
     @OneToMany
-    @JoinTable(name = "registration", joinColumns = {@JoinColumn(name = "room_id")}, inverseJoinColumns = {
+    @JoinTable(name = "registrations", joinColumns = {@JoinColumn(name = "room_id")}, inverseJoinColumns = {
             @JoinColumn(name = "player_id")})
     private List<Player> players = new ArrayList<>();
 

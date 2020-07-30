@@ -10,12 +10,12 @@ public class Spin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "spin_generator")
-    @SequenceGenerator(name = "spin_generator", sequenceName = "spin_seq", allocationSize = 50)
+    @SequenceGenerator(name = "spin_generator", sequenceName = "spin_seq")
     @Column
     private int id;
 
     @Column
-    private int spinNumber;
+    private byte spinNumber;
 
     @Column
     private int playerId;
@@ -34,11 +34,11 @@ public class Spin {
         this.id = id;
     }
 
-    public int getSpinNumber() {
+    public byte getSpinNumber() {
         return spinNumber;
     }
 
-    public void setSpinNumber(int spinNumber) {
+    public void setSpinNumber(byte spinNumber) {
         this.spinNumber = spinNumber;
     }
 

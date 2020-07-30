@@ -19,11 +19,11 @@ public class RouletteService implements RouletteRules {
         this.playerService = playerService;
     }
 
-    public Integer revealNumber() {
-        return (int) (Math.random() * ((MAX - MIN) + 1));
+    public byte revealNumber() {
+        return (byte) (Math.random() * ((MAX - MIN) + 1));
     }
 
-    public void handleBets(List<Player> players, Integer spinNumber) {
+    public void handleBets(List<Player> players, byte spinNumber) {
         for (Player player : players) {
             for (Bet bet : player.getBet()) {
                 switch (bet.getBetType()) {
