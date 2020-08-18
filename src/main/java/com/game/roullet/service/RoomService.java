@@ -157,7 +157,7 @@ public class RoomService {
 
 
         if(player.getRoom().getId() != roomId){
-            throw new RuntimeException("Player is in another room");
+            throw new RuntimeException("Player is registered already to another room");
         }
 
         Bet bet = new Bet();

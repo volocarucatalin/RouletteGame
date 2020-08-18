@@ -3,12 +3,9 @@ package com.game.roullet.service;
 import com.game.roullet.entity.Player;
 import com.game.roullet.entity.Registration;
 import com.game.roullet.entity.Room;
-import com.game.roullet.repository.BetRepository;
 import com.game.roullet.repository.PlayerRepository;
 import com.game.roullet.repository.RegistrationRepository;
 import com.game.roullet.repository.RoomRepository;
-import com.game.roullet.request.BetRequest;
-import com.game.roullet.util.Role;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,22 +16,24 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class RouletteServiceMakeBetTest {
+public class RoomServiceJoinRoomTest {
+
     public static final String PLAYER_DOSE_NOT_EXIST = "Player dose not exist";
+    public static final String ROOM_DOSE_NOT_EXIST_ = "Room dose not exist ";
+    public static final String PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM = "Player is registered already to another room";
+    public static final String ROOM_IS_FULL = "Room is full";
+    public static final String ROOM_WAS_CLOSED = "Room was closed";
     public static final int INVALID_PLAYER = 2;
     public static final int VALID_PLAYER = 1;
     public static final int VALID_ROOM = 1;
-    public static final int INVALID_ROOM = 3;
-    public static final int VALID_SECOND_ROOM = 2;
-    public static final int PLAYER_ID = 1;
-    public static final int ROOM_ID = 1;
-    public static final String PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM = "Player is registered already to another room";
+    public static final int INVALID_ROOM = 2;
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
@@ -50,79 +49,82 @@ public class RouletteServiceMakeBetTest {
     @InjectMocks
     RoomService roomService;
 
-    @Mock
-    BetRepository betRepository;
-
-
-    Optional<Registration> registrationOptional;
-
-    Registration registration = new Registration();
-
     Optional<Player> optionalEmpty;
 
-    Room room = new Room();
-
-    Room roomSecond = new Room();
+    Room room;
 
     Optional<Room> roomOptionalEmpty;
 
     Optional<Room> roomOptional;
 
-    Optional<Room> roomSecondOptional;
-
-    Player player = new Player();
+    Player player;
 
     Optional<Player> playerOptional;
 
-    BetRequest betRequest = new BetRequest();
-
     @Before
     public void init() {
-        registrationOptional = Optional.of(registration);
         optionalEmpty = Optional.empty();
-        room.setId(VALID_ROOM);
+        room = new Room();
+        room.setId(1);
         roomOptionalEmpty = Optional.empty();
-        roomSecond.setId(VALID_SECOND_ROOM);
-        roomSecondOptional = Optional.of(roomSecond);
-        player.setId(VALID_PLAYER);
+        player = new Player();
+        player.setId(1);
         playerOptional = Optional.of(player);
         roomOptional = Optional.of(room);
         when(playerRepository.findById(INVALID_PLAYER)).thenReturn(optionalEmpty);
         when(playerRepository.findById(VALID_PLAYER)).thenReturn(playerOptional);
         when(roomRepository.findById(VALID_ROOM)).thenReturn(roomOptional);
-        when(roomRepository.findById(VALID_SECOND_ROOM)).thenReturn(roomSecondOptional);
         when(roomRepository.findById(INVALID_ROOM)).thenReturn(roomOptionalEmpty);
-        when(registrationRepository.findByPlayerIdAndRoomId(PLAYER_ID, ROOM_ID)).thenReturn(registration);
     }
 
+
     @Test
-    public void testMakeBetPlayerDoseNotExist(){
+    public void testJoinRoomNotFoundPlayer() {
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage(PLAYER_DOSE_NOT_EXIST);
-        roomService.makeBet(INVALID_PLAYER,VALID_ROOM, betRequest);
+        roomService.joinRoom(INVALID_PLAYER, VALID_ROOM);
     }
 
 
     @Test
-    public void testMakeBetPlayerAnotherRoom() {
+    public void testRoomNotExist() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(ROOM_DOSE_NOT_EXIST_);
+        roomService.joinRoom(VALID_PLAYER, INVALID_ROOM);
+    }
+
+    @Test
+    public void testPlayerIsPresentInOtherRoom() {
+        Registration registration = new Registration();
         registration.setPlayer(player);
         registration.setRoom(room);
-        registration.setRole(Role.ADMIN);
         player.setRegistration(registration);
-        player.setRoom(room);
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage(PLAYER_IS_REGISTERED_ALREADY_TO_ANOTHER_ROOM);
-        roomService.makeBet(VALID_PLAYER,VALID_SECOND_ROOM, betRequest);
+        roomService.joinRoom(VALID_PLAYER, VALID_ROOM);
     }
 
     @Test
-    public void testMakeBet(){
-        registration.setRoom(room);
-        registration.setPlayer(player);
-        registration.setRole(Role.ADMIN);
-        player.setRegistration(registration);
-        player.setRoom(room);
-       roomService.makeBet(VALID_PLAYER,VALID_ROOM,betRequest);
+    public void testRoomIsFull() {
+        room.setRegistrations(List.of(new Registration(), new Registration(), new Registration(), new Registration()));
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(ROOM_IS_FULL);
+        roomService.joinRoom(VALID_PLAYER, VALID_ROOM);
+    }
+
+    @Test
+    public void testRoomIsClosed() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(ROOM_WAS_CLOSED);
+        roomService.joinRoom(VALID_PLAYER, VALID_ROOM);
+    }
+
+
+    @Test
+    public void testJoinRoom() {
+        Registration registration = new Registration();
+        room.setRegistrations(List.of(registration));
+        roomService.joinRoom(VALID_PLAYER, VALID_ROOM);
     }
 
 }

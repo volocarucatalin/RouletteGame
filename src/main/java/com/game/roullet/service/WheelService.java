@@ -1,7 +1,10 @@
 package com.game.roullet.service;
 
-import com.game.roullet.entity.*;
-import com.game.roullet.repository.*;
+import com.game.roullet.entity.Player;
+import com.game.roullet.entity.Room;
+import com.game.roullet.entity.Spin;
+import com.game.roullet.repository.PlayerRepository;
+import com.game.roullet.repository.SpinRepository;
 import com.game.roullet.response.SpinResponse;
 import com.game.roullet.util.Role;
 import com.game.roullet.util.RoomStatus;
@@ -15,20 +18,14 @@ import java.util.Optional;
 @Service
 public class WheelService {
 
-    private final RoomRepository roomRepository;
     private final PlayerRepository playerRepository;
-    private final RegistrationRepository registrationRepository;
-    private final BetRepository betRepository;
     private final RouletteService rouletteService;
     private final SpinRepository spinRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public WheelService(RoomRepository roomRepository, PlayerRepository playerRepository, RegistrationRepository registrationRepository, BetRepository betRepository, RouletteService rouletteService, SpinRepository spinRepository, ModelMapper modelMapper) {
-        this.roomRepository = roomRepository;
+    public WheelService(PlayerRepository playerRepository, RouletteService rouletteService, SpinRepository spinRepository, ModelMapper modelMapper) {
         this.playerRepository = playerRepository;
-        this.registrationRepository = registrationRepository;
-        this.betRepository = betRepository;
         this.rouletteService = rouletteService;
         this.spinRepository = spinRepository;
         this.modelMapper = modelMapper;
