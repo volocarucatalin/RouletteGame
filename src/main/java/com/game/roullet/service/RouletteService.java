@@ -29,49 +29,49 @@ public class RouletteService implements RouletteRules {
                 switch (bet.getBetType()) {
                     case ROW:
                         if (isRow(spinNumber, bet.getBetTypeValue())) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 3));
 
                         }
                         break;
 
                     case COLUMN:
                         if (isColumn(spinNumber, bet.getBetTypeValue())) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 3));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 3));
 
                         }
                         break;
 
                     case ODD:
                         if (isOdd(spinNumber)) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 2));
 
                         }
                         break;
 
                     case EVEN:
                         if (!isOdd(spinNumber)) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 2));
 
                         }
                         break;
 
                     case RED:
                         if (isRed(spinNumber)) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 2));
 
                         }
                         break;
 
                     case BLACK:
                         if (!isRed(spinNumber)) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 2));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 2));
 
                         }
                         break;
 
                     case NUMBER:
                         if (isTheSameNumber(spinNumber, bet.getBetTypeValue())) {
-                            playerService.receiveWiningAmount(bet.getPlayer().getId(), (bet.getBetAmount() * 36));
+                            playerService.receiveWiningAmount(player.getId(), (bet.getBetAmount() * 36));
 
                         }
                         break;
